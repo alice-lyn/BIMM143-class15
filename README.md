@@ -1,3 +1,3 @@
 # BIMM143_github
 
-My classwork for BIMM143/Bioinformatics SP24 at UCSD.
+My classwork for BIMM143/Bioinformatics SP24 at UC San Diego.
