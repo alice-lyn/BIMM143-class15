@@ -1,0 +1,130 @@
+---
+title: "Class6: R functions"
+author: "Alice Lai (PID:A16799081)"
+format: 
+  pdf:
+    colorlinks: true
+---
+
+Functions are how we get work done in R. We call functions to do everything from reading data to doing analysis and outputing plots and results. 
+
+All functions in R have at least 3 things: 
+- a **name** (you get to pick this)
+- input **arguments** (there can be only one or loads)
+- the **body** (where the work gets done, these codes are between the curly brackets)
+
+## 1. A first silly function 
+
+```{r}
+x <- 10
+y <- 10
+x + y
+```
+
+```{r}
+add <- function(x) {
+  y <- 10
+  x + y
+}
+```
+
+```{r}
+add(1)
+```
+
+```{r}
+add <- function(x, y) {
+  x + y
+}
+
+add(10, 10)
+```
+
+```{r}
+add(10, 100)
+```
+
+
+## 2. grade() function 
+
+# trials 
+```{r}
+# Example input vectors to start with
+student1 <- c(100, 100, 100, 100, 100, 100, 100, 90)
+student2 <- c(100, NA, 90, 90, 90, 90, 97, 80)
+student3 <- c(90, NA, NA, NA, NA, NA, NA, NA)
+
+mean(student1)
+mean(student2, na.rm=TRUE)
+mean(student3, na.rm=TRUE)
+```
+
+```{r}
+min(student1)
+min(student2)
+min(student3)
+```
+
+```{r}
+#which.min() returns the location where the minimal value occurs.
+which.min(student1) 
+which.min(student2)
+which.min(student3)
+```
+
+```{r}
+minLocation <- which.min(student1) 
+newGrades <- student1[-minLocation]
+meanGrade <- mean(newGrades, na.rm = TRUE) 
+meanGrade
+```
+
+# Q1. my working function! 
+```{r}
+grade <- function(grades) {
+  #find and replace all the NA to 0
+  grades[is.na(grades)] <- 0 
+  #find the location of the min value
+  minLocation <- which.min(grades) 
+  #create a new vector that omits the min value
+  newGrades <- grades[-minLocation]
+  #calculate the mean of the new vector
+  meanGrade <- mean(newGrades) 
+  meanGrade
+}
+
+grade(student1)
+grade(student2)
+grade(student3)
+```
+
+# Q1. applying function to url gradebook 
+```{r}
+url <- "https://tinyurl.com/gradeinput"
+gradebook <- read.csv(url, row.names = 1)
+
+# array = gradebook, margin = row (1 for row, 2 for col), function = grade
+grades <- apply(gradebook, 1, grade)
+```
+
+# Q2. top scoring student 
+```{r}
+which.max(grades)
+max(grades)
+```
+
+# Q3. hardest homework 
+```{r}
+apply(gradebook, 2, mean, na.rm=TRUE)
+which.min(apply(gradebook, 2, mean, na.rm=TRUE))
+```
+
+# Q4. highest correlation with average grade score
+```{r}
+mask <- gradebook
+mask[is.na(mask)] <- 0
+mask
+
+apply(mask, 2, cor, y=grades)
+```
+
