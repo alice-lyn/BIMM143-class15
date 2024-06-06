@@ -1,3 +1,0 @@
-ssh -i "~/Downloads/bimm143_alice.pem" ubuntu@ec2-54-149-72-99.us-west-2.compute.amazonaws.com
-
-scp -r -i "~/Downloads/bimm143_alice.pem" ubuntu@ec2-54-149-72-99.us-west-2.compute.amazonaws.com:/home/ubuntu/class17/*_quant .
