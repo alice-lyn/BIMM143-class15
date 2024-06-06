@@ -1,0 +1,125 @@
+---
+title: "Class10: Structural Bioinformatics pt.1"
+author: "Alice Lai (PID: A16799091)"
+format: pdf
+---
+
+## What is in the PDB database 
+
+The main repository of biomolecular structure info is the PDB < www.rcsb.org >. 
+
+Let's see what this database contains: 
+
+```{r}
+url  <- "Data Export Summary.csv"
+stats <- read.csv(url, row.names = 1)
+stats
+```
+
+> Q1: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy.
+
+The function `as.numeric` can turn strings into numbers
+```{r}
+as.numeric(c(10,"1000"))
+```
+
+```{r}
+as.numeric(stats$X.ray)
+```
+
+How to get rid of the commas? 
+```{r}
+sum(as.numeric(sub(",", "", stats$X.ray)))
+```
+
+Turning it into a fucntion: 
+```{r}
+sumcomma <- function(x) {
+  sum(as.numeric(gsub(",", "", x)))
+}
+```
+
+```{r}
+n.total <- sumcomma(stats$Total)
+n.total
+```
+
+```{r}
+apply(stats, 2, sumcomma)
+```
+
+```{r}
+apply(stats, 2, sumcomma) / n.total
+```
+X.ray: 0.8412978005 * 100 = 84.12978005 %
+EM: 0.0921374464 * 100 = 9.21374464 %
+
+> Q2: What proportion of structures in the PDB are protein?
+
+```{r}
+189750/n.total * 100
+```
+
+
+> Q3: Type HIV in the PDB website search box on the home page and determine how many HIV-1 protease structures are in the current PDB?
+
+248805733 - 219140
+```{r}
+219140/248805733 * 100
+```
+
+
+
+## Visualizing the HIV-1 protease structure
+
+Mol* ("molstar") is a web-based molecular viewer
+https://molstar.org/viewer/ 
+
+![](1HSG.png)
+
+![](1HSG copy.png)
+
+> Q4: Water molecules normally have 3 atoms. Why do we see just one atom per water molecule in this structure?
+
+The two H atoms are smaller than the resolution can catch, so it's not on the image. 
+
+
+## Working with the bio3d package 
+
+```{r}
+library(bio3d)
+```
+
+```{r}
+pdb <- read.pdb("1hsg")
+```
+
+```{r}
+head(pdb$atom)
+```
+
+```{r}
+pdbseq(pdb)[25]
+```
+
+
+
+## Predicting functional motions of a single structure 
+
+We can do a bioinformatics prediction 
+
+```{r}
+pdb <- read.pdb("6s36")
+pdb
+```
+
+```{r}
+m <- nma(pdb) 
+plot(m)
+```
+
+```{r}
+mktrj(m, file="adk_m7.pdb")
+```
+
+
